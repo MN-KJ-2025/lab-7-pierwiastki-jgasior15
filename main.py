@@ -56,10 +56,10 @@ def frob_a(coef: np.ndarray) -> np.ndarray | None:
     """
     if not isinstance(coef,np.ndarray) or coef.ndim != 1 or coef.size <2:
         return None
-    F = np.zeros((coef.size-2,coef.size-1))
-    F[1:,:] = np.eye(coef.size-2)
+    F = np.zeros((coef.size-1,coef.size-1))
+    F[:-1,1:] = np.eye(coef.size-2)
     a_vec = -coef[0:-1]/coef[-1]
-    F = np.concatenate((F, a_vec))
+    F[-1,:] = a_vec
     return F
 
 
@@ -76,4 +76,13 @@ def is_nonsingular(A: np.ndarray) -> bool | None:
             wypadku `False`.
         Jeżeli dane wejściowe są niepoprawne funkcja zwraca `None`.
     """
-    pass
+    if not isinstance(A, np.ndarray):
+        return None
+    if A.ndim != 2:
+        return None
+    if A.shape[0] != A.shape[1]:
+        return None
+    
+    return np.linalg.matrix_rank(A) == A.shape[0]
+    
+
